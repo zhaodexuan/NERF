@@ -1,4 +1,4 @@
-#' @title Estimate the GGUM
+#' @title Estimate by GGUM
 #'
 #' @description Get the estimation of the GGUM.
 #'

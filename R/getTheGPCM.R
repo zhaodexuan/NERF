@@ -1,4 +1,4 @@
-#' @title Estimate the GPCM
+#' @title Estimate by GPCM
 #'
 #' @description Get the estimation of the GPCM.
 #'

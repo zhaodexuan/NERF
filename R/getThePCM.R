@@ -1,4 +1,4 @@
-#' @title Estimate the PCM
+#' @title Estimate by PCM
 #'
 #' @description Get the estimation of the PCM.
 #'
