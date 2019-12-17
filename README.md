@@ -1,2 +1,2 @@
 # NERF
-Non-Effortful Responses Filter
+Detect non-effortful responses in questionnaires or examinations.
