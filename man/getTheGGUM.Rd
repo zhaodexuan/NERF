@@ -2,7 +2,7 @@
 % Please edit documentation in R/getTheGGUM.R
 \name{getTheGGUM}
 \alias{getTheGGUM}
-\title{Estimate the GGUM}
+\title{Estimate by GGUM}
 \usage{
 getTheGGUM(
   theDataK,

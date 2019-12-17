@@ -2,7 +2,7 @@
 % Please edit documentation in R/getTheGPCM.R
 \name{getTheGPCM}
 \alias{getTheGPCM}
-\title{Estimate the GPCM}
+\title{Estimate by GPCM}
 \usage{
 getTheGPCM(theDataK, theC, SE = FALSE, method = "EM")
 }

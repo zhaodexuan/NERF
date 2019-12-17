@@ -2,7 +2,7 @@
 % Please edit documentation in R/getThePCM.R
 \name{getThePCM}
 \alias{getThePCM}
-\title{Estimate the PCM}
+\title{Estimate by PCM}
 \usage{
 getThePCM(theDataK, theC, SE = FALSE)
 }
