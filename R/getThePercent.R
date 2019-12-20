@@ -1,4 +1,4 @@
-#' @title Step Percent of Random Replacement Deviation 
+#' @title Step Percent of Random Replacement Deviation
 #'
 #' @description Step by step list the proportionally random expectation deviations.
 #'
@@ -10,12 +10,12 @@
 #'
 #' @param theDim The Calculated Dimensions.
 #'
-#' @param theStep How many divisions from 0 to 1.
+#' @param theStep An array of random replacement ratio.
 #'
 #' @param maxBoot The maximum steps of bootstrap.
-#' 
+#'
 #' @param theCompare = 'between', 'lower', 'upper', 'mean'
-#' 
+#'
 #' @param theAlt = 'two.sided', 'greater', 'less'
 #'
 #' @param theSig = 0.05
@@ -32,15 +32,16 @@
 #' @export
 #'
 
-getThePercent <- function(theData, theExpectPoint, theCategory, theDim, theStep = 10, maxBoot = 1000,
+getThePercent <- function(theData, theExpectPoint, theCategory, theDim,
+                          theStep = c(0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1), maxBoot = 1000,
                           theCompare = 'upper', theAlt = 'less', theSig = 0.05){
   nFac <- max(theDim)
   thePR <- list()
-  for (s in 1:theStep) {
+  for (s in 1:length(theStep)) {
     theDeviation <- getTheDeviation(theData, theExpectPoint, theCategory, theDim,
-                                    RandomReplaceRatio = (s/theStep), maxBoot = maxBoot, theCompare = theCompare,
+                                    RandomReplaceRatio = theStep[s], maxBoot = maxBoot, theCompare = theCompare,
                                     theAlt = theAlt, theSig = theSig)
-    
+
     theOutABS <- list()
     theOutRMSD <- list()
     theOutWABS <- list()
@@ -50,41 +51,41 @@ getThePercent <- function(theData, theExpectPoint, theCategory, theDim, theStep 
       RMSD <- unlist(theDeviation[[2]])
       WABS <- unlist(theDeviation[[3]])
       WRMSD <- unlist(theDeviation[[4]])
-      
+
       theFacABS <- c()
       for (i in 1:length(theData[,1])) {
         if(!is.na(ABS[i,5,k])){
           theFacABS <- c(theFacABS,i)
         }
       }
-      
+
       theFacRMSD <- c()
       for (i in 1:length(theData[,1])) {
         if(!is.na(RMSD[i,5,k])){
           theFacRMSD <- c(theFacRMSD,i)
         }
       }
-      
+
       theFacWABS <- c()
       for (i in 1:length(theData[,1])) {
         if(!is.na(WABS[i,5,k])){
           theFacWABS <- c(theFacWABS,i)
         }
       }
-      
+
       theFacWRMSD <- c()
       for (i in 1:length(theData[,1])) {
         if(!is.na(WRMSD[i,5,k])){
           theFacWRMSD <- c(theFacWRMSD,i)
         }
       }
-      
+
       theOutABS[[k]] <- theFacABS
       theOutRMSD[[k]] <- theFacRMSD
       theOutWABS[[k]] <- theFacWABS
       theOutWRMSD[[k]] <- theFacWRMSD
     }
-    
+
     theStepPR <- list()
     theStepPR[[1]] <- theOutABS
     theStepPR[[2]] <- theOutRMSD
@@ -94,7 +95,7 @@ getThePercent <- function(theData, theExpectPoint, theCategory, theDim, theStep 
     names(theStepPR) <- c('outABS','outRMSD','outWABS','outWRMSD','theDeviation')
     thePR[[s]] <- theStepPR
   }
-  
-  names(thePR) <- c(paste0('percent', 1:theStep, '/', theStep))
+
+  names(thePR) <- c(paste0('percent', theStep))
   return(thePR)
 }

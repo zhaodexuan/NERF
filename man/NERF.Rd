@@ -22,8 +22,8 @@ NERF(
   max_inner = 60,
   tol = 0.001,
   method = "EM",
-  RandomReplaceRatio = 0.5,
-  maxBoot = 200,
+  theStep = c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1),
+  maxBoot = 1000,
   theCompare = "upper",
   theAlt = "less",
   theSig = 0.05
@@ -64,7 +64,7 @@ NERF(
 
 \item{method}{= 'EM'}
 
-\item{RandomReplaceRatio}{Decimal between 0 and 1.}
+\item{theStep}{An array of random replacement ratio.}
 
 \item{maxBoot}{The maximum steps of bootstrap.}
 

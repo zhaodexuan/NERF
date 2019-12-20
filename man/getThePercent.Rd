@@ -9,7 +9,7 @@ getThePercent(
   theExpectPoint,
   theCategory,
   theDim,
-  theStep = 10,
+  theStep = c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1),
   maxBoot = 1000,
   theCompare = "upper",
   theAlt = "less",
@@ -25,7 +25,7 @@ getThePercent(
 
 \item{theDim}{The Calculated Dimensions.}
 
-\item{theStep}{How many divisions from 0 to 1.}
+\item{theStep}{An array of random replacement ratio.}
 
 \item{maxBoot}{The maximum steps of bootstrap.}
 

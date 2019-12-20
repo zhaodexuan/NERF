@@ -36,7 +36,7 @@
 #'
 #' @param method = 'EM'
 #'
-#' @param RandomReplaceRatio Decimal between 0 and 1.
+#' @param theStep An array of random replacement ratio.
 #'
 #' @param maxBoot The maximum steps of bootstrap.
 #'
@@ -62,8 +62,8 @@ NERF <- function(theTempData, ifInf = 'edge', ifNA = 'central', k=10,
                  center = TRUE, scale = TRUE, fm = 'mle', rotate = 'varimax',
                  theModel = 'GPCM', pack ='mirt', SE = FALSE, precision = 4,
                  N_nodes = 30, max_outer = 60, max_inner = 60, tol = 0.001,
-                 method = 'EM', RandomReplaceRatio = 0.5, maxBoot = 200,
-                 theCompare = 'upper', theAlt = 'less', theSig = 0.05){
+                 method = 'EM', theStep = c(0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1),
+                 maxBoot = 1000, theCompare = 'upper', theAlt = 'less', theSig = 0.05){
 
   theData <- getTheData(theTempData, ifInf = ifInf, ifNA = ifNA, k = k)
 
@@ -80,8 +80,9 @@ NERF <- function(theTempData, ifInf = 'edge', ifNA = 'central', k=10,
   #                                 RandomReplaceRatio = RandomReplaceRatio, maxBoot = maxBoot,
   #                                 theCompare = theCompare, theAlt = theAlt, theSig = theSig)
 
-  thePercent <- getThePercent(theData, theExpectPoint, theCategory, theDim, theStep = 10, maxBoot = 1000,
-                              theCompare = 'upper', theAlt = 'less', theSig = 0.05)
+  thePercent <- getThePercent(theData, theExpectPoint, theCategory, theDim,
+                              theStep = theStep, maxBoot = maxBoot,
+                              theCompare = theCompare, theAlt = theAlt, theSig = theSig)
 
   theNERF <- list()
   theNERF[[1]] <- theData
