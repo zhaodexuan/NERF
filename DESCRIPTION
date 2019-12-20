@@ -1,11 +1,11 @@
 Package: NERF
 Type: Package
 Title: Non-Effortful Responses Filter
-Version: 0.1.0
+Version: 0.1.1
 Author: zdx
 Maintainer: zdx <zhaodexuan@aliyun.com>
 Description: Detect non-effortful responses in questionnaires or examinations.
-Imports: DMwR, psych, GGUM, mirt, eRm
+Imports: DMwR, psych, GGUM, mirt, eRm, ltm
 License: GPL
 Encoding: UTF-8
 LazyData: true

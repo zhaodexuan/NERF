@@ -24,7 +24,7 @@
 #' @importFrom stats runif
 #'
 
-getTheBoot <- function(theDataK, thePoint, theC, RandomReplaceRatio = 0.5, maxBoot = 100){
+getTheBoot <- function(theDataK, thePoint, theC, RandomReplaceRatio = 0.5, maxBoot = 200){
   theS <- array(NA, dim = c(length(thePoint[, 1]), 4, maxBoot))
   colnames(theS) <- c('ABS', 'RMSD', 'WABS', 'WRMSD')
 

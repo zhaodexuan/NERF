@@ -26,7 +26,7 @@ getTheExpectPoint(
 
 \item{theDim}{The Calculated Dimensions.}
 
-\item{theModel}{= 'GGUM' 'GPCM' 'PCM'}
+\item{theModel}{= 'GGUM' 'GPCM' 'PCM' 'GRM'}
 
 \item{pack}{= 'GGUM' 'mirt'}
 

@@ -8,7 +8,7 @@
 #'
 #' @param theDim The Calculated Dimensions.
 #'
-#' @param theModel = 'GGUM' 'GPCM' 'PCM'
+#' @param theModel = 'GGUM' 'GPCM' 'PCM' 'GRM'
 #'
 #' @param pack = 'GGUM' 'mirt'
 #'
@@ -61,6 +61,8 @@ getTheExpectPoint <- function(theData, theCategory, theDim, theModel = 'GGUM', p
         thePoint <- getThePCM(theDataK, theC, SE = SE)
       }else if(theModel=='GPCM'){
         thePoint <- getTheGPCM(theDataK, theC, SE = SE)
+      }else if(theModel=='GRM'){
+        thePoint <- getTheGRM(theDataK, theC, SE = SE)
       }
 
       theExpPoint[, theDim==k] <- thePoint

@@ -4,7 +4,7 @@
 \alias{getTheBoot}
 \title{Random Replace Bootstrap}
 \usage{
-getTheBoot(theDataK, thePoint, theC, RandomReplaceRatio = 0.5, maxBoot = 100)
+getTheBoot(theDataK, thePoint, theC, RandomReplaceRatio = 0.5, maxBoot = 200)
 }
 \arguments{
 \item{theDataK}{The data matrix of factor K.}

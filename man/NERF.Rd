@@ -24,6 +24,8 @@ NERF(
   method = "EM",
   RandomReplaceRatio = 0.5,
   maxBoot = 200,
+  theCompare = "upper",
+  theAlt = "less",
   theSig = 0.05
 )
 }
@@ -44,7 +46,7 @@ NERF(
 
 \item{rotate}{= 'varimax'}
 
-\item{theModel}{= 'GGUM' 'GPCM' 'PCM'}
+\item{theModel}{= 'GGUM' 'GPCM' 'PCM' 'GRM'}
 
 \item{pack}{= 'GGUM' 'mirt'}
 
@@ -66,6 +68,10 @@ NERF(
 
 \item{maxBoot}{The maximum steps of bootstrap.}
 
+\item{theCompare}{= 'between', 'lower', 'upper', 'mean'}
+
+\item{theAlt}{= 'two.sided', 'greater', 'less'}
+
 \item{theSig}{= 0.05}
 }
 \value{
@@ -76,7 +82,7 @@ Detect non-effortful responses in questionnaires or examinations.
 }
 \examples{
 \dontrun{
-theDeviation <- NERF(theTempData)
+theNERF <- NERF(theTempData)
 }
 
 }

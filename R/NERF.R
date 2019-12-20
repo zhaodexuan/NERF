@@ -18,7 +18,7 @@
 #'
 #' @param rotate = 'varimax'
 #'
-#' @param theModel = 'GGUM' 'GPCM' 'PCM'
+#' @param theModel = 'GGUM' 'GPCM' 'PCM' 'GRM'
 #'
 #' @param pack = 'GGUM' 'mirt'
 #'
@@ -40,6 +40,10 @@
 #'
 #' @param maxBoot The maximum steps of bootstrap.
 #'
+#' @param theCompare = 'between', 'lower', 'upper', 'mean'
+#'
+#' @param theAlt = 'two.sided', 'greater', 'less'
+#'
 #' @param theSig = 0.05
 #'
 #' @return The function returns a list.
@@ -48,7 +52,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' theDeviation <- NERF(theTempData)
+#' theNERF <- NERF(theTempData)
 #' }
 #'
 #' @export
@@ -58,7 +62,8 @@ NERF <- function(theTempData, ifInf = 'edge', ifNA = 'central', k=10,
                  center = TRUE, scale = TRUE, fm = 'mle', rotate = 'varimax',
                  theModel = 'GPCM', pack ='mirt', SE = FALSE, precision = 4,
                  N_nodes = 30, max_outer = 60, max_inner = 60, tol = 0.001,
-                 method = 'EM', RandomReplaceRatio = 0.5, maxBoot = 200, theSig = 0.05){
+                 method = 'EM', RandomReplaceRatio = 0.5, maxBoot = 200,
+                 theCompare = 'upper', theAlt = 'less', theSig = 0.05){
 
   theData <- getTheData(theTempData, ifInf = ifInf, ifNA = ifNA, k = k)
 
@@ -71,9 +76,19 @@ NERF <- function(theTempData, ifInf = 'edge', ifNA = 'central', k=10,
                                       max_outer = max_outer, max_inner = max_inner, tol = tol,
                                       method = method)
 
-  theDeviation <- getTheDeviation(theData, theExpectPoint, theCategory, theDim,
-                                  RandomReplaceRatio = RandomReplaceRatio,
-                                  maxBoot = maxBoot, theSig = theSig)
+  # theDeviation <- getTheDeviation(theData, theExpectPoint, theCategory, theDim,
+  #                                 RandomReplaceRatio = RandomReplaceRatio, maxBoot = maxBoot,
+  #                                 theCompare = theCompare, theAlt = theAlt, theSig = theSig)
 
-  return(theDeviation)
+  thePercent <- getThePercent(theData, theExpectPoint, theCategory, theDim, theStep = 10, maxBoot = 1000,
+                              theCompare = 'upper', theAlt = 'less', theSig = 0.05)
+
+  theNERF <- list()
+  theNERF[[1]] <- theData
+  theNERF[[2]] <- theDim
+  theNERF[[3]] <- theCategory
+  theNERF[[4]] <- theExpectPoint
+  theNERF[[5]] <- thePercent
+  names(theNERF) <- c('theData','theDim','theCategory','theExpectPoint','thePercent')
+  return(theNERF)
 }
