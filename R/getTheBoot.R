@@ -29,7 +29,8 @@ getTheBoot <- function(theDataK, thePoint, theC, RandomReplaceRatio = 0.5, maxBo
   colnames(theS) <- c('ABS', 'RMSD', 'WABS', 'WRMSD')
 
   for (b in 1:maxBoot) {
-    tempDataK <- theDataK
+    # tempDataK <- theDataK
+    tempDataK <- thePoint
     for (i in 1:length(thePoint[, 1])) {
       for (j in 1:length(thePoint[1, ])) {
         # i=1
