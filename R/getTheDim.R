@@ -1,6 +1,6 @@
 #' @title Calculate the Dimensions
 #'
-#' @description Calculate the dimensions of the data by factor analysis.
+#' @description Calculate the dimensions of the data by factor analysis. Factors for less than two items will be combined
 #'
 #' @param theData The prepared data matrix.
 #'
@@ -36,6 +36,20 @@ getTheDim <- function(theData, center = TRUE, scale = TRUE, fm = 'mle', rotate =
   nFac <- theM$nfact
   theFA <- fa(theX, nfactors = nFac, fm=fm, rotate = rotate)
   theDim <- max.col(theFA$loadings)
+
+  for (i in 1:max(theDim)) {
+    if(length(theDim[theDim==i])<3){
+      theDim[theDim==i] <- 0
+    }
+  }
+
+  if(length(theDim[theDim==0])>0){
+    if(length(theDim[theDim==0])<3){
+      theDim[theDim==0] <- max(theDim)
+    }else{
+      theDim[theDim==0] <- max(theDim) + 1
+    }
+  }
 
   return(theDim)
 }

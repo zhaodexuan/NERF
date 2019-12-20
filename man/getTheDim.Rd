@@ -21,7 +21,7 @@ getTheDim(theData, center = TRUE, scale = TRUE, fm = "mle", rotate = "varimax")
 The function returns an array.
 }
 \description{
-Calculate the dimensions of the data by factor analysis.
+Calculate the dimensions of the data by factor analysis. Factors for less than two items will be combined
 }
 \examples{
 \dontrun{
