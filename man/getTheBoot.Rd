@@ -4,7 +4,14 @@
 \alias{getTheBoot}
 \title{Random Replace Bootstrap}
 \usage{
-getTheBoot(theDataK, thePoint, theC, RandomReplaceRatio = 0.5, maxBoot = 200)
+getTheBoot(
+  theDataK,
+  thePoint,
+  theC,
+  RandomReplaceRatio = 0.5,
+  maxBoot = 200,
+  tempPrint = ""
+)
 }
 \arguments{
 \item{theDataK}{The data matrix of factor K.}
@@ -16,6 +23,8 @@ getTheBoot(theDataK, thePoint, theC, RandomReplaceRatio = 0.5, maxBoot = 200)
 \item{RandomReplaceRatio}{Decimal between 0 and 1.}
 
 \item{maxBoot}{The maximum steps of bootstrap.}
+
+\item{tempPrint}{= ''}
 }
 \value{
 The function returns an array.

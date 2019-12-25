@@ -38,24 +38,26 @@ getThePercent <- function(theData, theExpectPoint, theCategory, theDim,
   nFac <- max(theDim)
   thePR <- list()
   for (s in 1:length(theStep)) {
+    tempPrintP <- paste0('percent', theStep[s], ':')
+    # print(tempPrintP)
     theDeviation <- getTheDeviation(theData, theExpectPoint, theCategory, theDim,
                                     RandomReplaceRatio = theStep[s], maxBoot = maxBoot, theCompare = theCompare,
-                                    theAlt = theAlt, theSig = theSig)
+                                    theAlt = theAlt, theSig = theSig, tempPrint = tempPrintP)
 
-    theOutABS <- list()
+    theOutMAD <- list()
     theOutRMSD <- list()
-    theOutWABS <- list()
+    theOutWMAD <- list()
     theOutWRMSD <- list()
     for (k in 1:nFac) {
-      ABS <- unlist(theDeviation[[1]]) # nTestee, 1observe_2mean_3lower_4upper_5sign, nFac
+      MAD <- unlist(theDeviation[[1]]) # nTestee, 1observe_2mean_3lower_4upper_5sign, nFac
       RMSD <- unlist(theDeviation[[2]])
-      WABS <- unlist(theDeviation[[3]])
+      WMAD <- unlist(theDeviation[[3]])
       WRMSD <- unlist(theDeviation[[4]])
 
-      theFacABS <- c()
+      theFacMAD <- c()
       for (i in 1:length(theData[,1])) {
-        if(!is.na(ABS[i,5,k])){
-          theFacABS <- c(theFacABS,i)
+        if(!is.na(MAD[i,5,k])){
+          theFacMAD <- c(theFacMAD,i)
         }
       }
 
@@ -66,10 +68,10 @@ getThePercent <- function(theData, theExpectPoint, theCategory, theDim,
         }
       }
 
-      theFacWABS <- c()
+      theFacWMAD <- c()
       for (i in 1:length(theData[,1])) {
-        if(!is.na(WABS[i,5,k])){
-          theFacWABS <- c(theFacWABS,i)
+        if(!is.na(WMAD[i,5,k])){
+          theFacWMAD <- c(theFacWMAD,i)
         }
       }
 
@@ -80,19 +82,19 @@ getThePercent <- function(theData, theExpectPoint, theCategory, theDim,
         }
       }
 
-      theOutABS[[k]] <- theFacABS
+      theOutMAD[[k]] <- theFacMAD
       theOutRMSD[[k]] <- theFacRMSD
-      theOutWABS[[k]] <- theFacWABS
+      theOutWMAD[[k]] <- theFacWMAD
       theOutWRMSD[[k]] <- theFacWRMSD
     }
 
     theStepPR <- list()
-    theStepPR[[1]] <- theOutABS
+    theStepPR[[1]] <- theOutMAD
     theStepPR[[2]] <- theOutRMSD
-    theStepPR[[3]] <- theOutWABS
+    theStepPR[[3]] <- theOutWMAD
     theStepPR[[4]] <- theOutWRMSD
     theStepPR[[5]] <- theDeviation
-    names(theStepPR) <- c('outABS','outRMSD','outWABS','outWRMSD','theDeviation')
+    names(theStepPR) <- c('outMAD','outRMSD','outWMAD','outWRMSD','theDeviation')
     thePR[[s]] <- theStepPR
   }
 

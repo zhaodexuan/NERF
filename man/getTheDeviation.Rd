@@ -13,7 +13,8 @@ getTheDeviation(
   maxBoot = 200,
   theCompare = "upper",
   theAlt = "less",
-  theSig = 0.05
+  theSig = 0.05,
+  tempPrint = ""
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ getTheDeviation(
 \item{theAlt}{= 'two.sided', 'greater', 'less'}
 
 \item{theSig}{= 0.05}
+
+\item{tempPrint}{= ''}
 }
 \value{
 The function returns a list.

@@ -12,6 +12,8 @@
 #'
 #' @param maxBoot The maximum steps of bootstrap.
 #'
+#' @param tempPrint = ''
+#'
 #' @return The function returns an array.
 #'
 #' @author zdx, \email{zhaodexuan@aliyun.com}
@@ -24,11 +26,14 @@
 #' @importFrom stats runif
 #'
 
-getTheBoot <- function(theDataK, thePoint, theC, RandomReplaceRatio = 0.5, maxBoot = 200){
+getTheBoot <- function(theDataK, thePoint, theC, RandomReplaceRatio = 0.5, maxBoot = 200, tempPrint = ''){
   theS <- array(NA, dim = c(length(thePoint[, 1]), 4, maxBoot))
-  colnames(theS) <- c('ABS', 'RMSD', 'WABS', 'WRMSD')
+  colnames(theS) <- c('MAD', 'RMSD', 'WMAD', 'WRMSD')
 
   for (b in 1:maxBoot) {
+    tempPrintB <- paste0(tempPrint, 'boot', b, '/', maxBoot)
+    print(tempPrintB)
+
     # tempDataK <- theDataK
     tempDataK <- thePoint
     for (i in 1:length(thePoint[, 1])) {

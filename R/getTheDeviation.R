@@ -13,12 +13,14 @@
 #' @param RandomReplaceRatio Decimal between 0 and 1.
 #'
 #' @param maxBoot The maximum steps of bootstrap.
-#' 
+#'
 #' @param theCompare = 'between', 'lower', 'upper', 'mean'
-#' 
+#'
 #' @param theAlt = 'two.sided', 'greater', 'less'
 #'
 #' @param theSig = 0.05
+#'
+#' @param tempPrint = ''
 #'
 #' @return The function returns a list.
 #'
@@ -38,18 +40,18 @@
 
 getTheDeviation <- function(theData, theExpectPoint, theCategory, theDim,
                             RandomReplaceRatio = 0.5, maxBoot = 200, theCompare = 'upper',
-                            theAlt = 'less', theSig = 0.05){
-  
-  
+                            theAlt = 'less', theSig = 0.05, tempPrint = ''){
+
+
   nTestee <- length(theData[, 1])
   nFac <- max(theDim)
-  theABS <- array(NA, dim = c(nTestee, nFac))
+  theMAD <- array(NA, dim = c(nTestee, nFac))
   theRMSD <- array(NA, dim = c(nTestee, nFac))
-  theWABS <- array(NA, dim = c(nTestee, nFac))
+  theWMAD <- array(NA, dim = c(nTestee, nFac))
   theWRMSD <- array(NA, dim = c(nTestee, nFac))
-  theRandomABS <- array(NA, dim = c(nTestee, 5, nFac)) #1observe 2mean 3lower 4upper 5sign
+  theRandomMAD <- array(NA, dim = c(nTestee, 5, nFac)) #1observe 2mean 3lower 4upper 5sign
   theRandomRMSD <- array(NA, dim = c(nTestee, 5, nFac))
-  theRandomWABS <- array(NA, dim = c(nTestee, 5, nFac))
+  theRandomWMAD <- array(NA, dim = c(nTestee, 5, nFac))
   theRandomWRMSD <- array(NA, dim = c(nTestee, 5, nFac))
   for (k in 1:nFac) {
     theC <- theCategory[theDim==k]
@@ -58,75 +60,77 @@ getTheDeviation <- function(theData, theExpectPoint, theCategory, theDim,
 
     for (i in 1:nTestee){
       theI <- length(theC[!is.na(thePoint[i,])])
-      theABS[i, k] <- sum(abs(thePoint[i, !is.na(thePoint[i,])] - theDataK[i, !is.na(thePoint[i,])])) / theI
+      theMAD[i, k] <- sum(abs(thePoint[i, !is.na(thePoint[i,])] - theDataK[i, !is.na(thePoint[i,])])) / theI
       theRMSD[i, k] <- sqrt(sum((thePoint[i, !is.na(thePoint[i,])] - theDataK[i, !is.na(thePoint[i,])])^2) / theI)
-      theWABS[i, k] <- sum(abs(thePoint[i, !is.na(thePoint[i,])] - theDataK[i, !is.na(thePoint[i,])]) / theC[!is.na(thePoint[i,])]) / theI
+      theWMAD[i, k] <- sum(abs(thePoint[i, !is.na(thePoint[i,])] - theDataK[i, !is.na(thePoint[i,])]) / theC[!is.na(thePoint[i,])]) / theI
       theWRMSD[i, k] <- sqrt(sum(((thePoint[i, !is.na(thePoint[i,])] - theDataK[i, !is.na(thePoint[i,])]) / theC[!is.na(thePoint[i,])])^2) / theI)
     }
 
-    theS <- getTheBoot(theDataK, thePoint, theC, RandomReplaceRatio = RandomReplaceRatio, maxBoot = maxBoot)
+    tempPrintD <- paste0(tempPrint, 'factor', k, '/', nFac, ':')
+    # print(tempPrintD)
+    theS <- getTheBoot(theDataK, thePoint, theC, RandomReplaceRatio = RandomReplaceRatio, maxBoot = maxBoot, tempPrint = tempPrintD)
 
     for (i in 1:nTestee){
-      # theRandomABS[i, 2, k] <- mean(theS[i, 1, ], na.rm = TRUE)
+      # theRandomMAD[i, 2, k] <- mean(theS[i, 1, ], na.rm = TRUE)
       # theRandomRMSD[i, 2, k] <- mean(theS[i, 2, ], na.rm = TRUE)
-      # theRandomWABS[i, 2, k] <- mean(theS[i, 3, ], na.rm = TRUE)
+      # theRandomWMAD[i, 2, k] <- mean(theS[i, 3, ], na.rm = TRUE)
       # theRandomWRMSD[i, 2, k] <- mean(theS[i, 4, ], na.rm = TRUE)
       #
-      # theRandomABS[i, 3, k] <- quantile(theS[i, 1, ],(theSig/2), na.rm = TRUE)
+      # theRandomMAD[i, 3, k] <- quantile(theS[i, 1, ],(theSig/2), na.rm = TRUE)
       # theRandomRMSD[i, 3, k] <- quantile(theS[i, 2, ],(theSig/2), na.rm = TRUE)
-      # theRandomWABS[i, 3, k] <- quantile(theS[i, 3, ],(theSig/2), na.rm = TRUE)
+      # theRandomWMAD[i, 3, k] <- quantile(theS[i, 3, ],(theSig/2), na.rm = TRUE)
       # theRandomWRMSD[i, 3, k] <- quantile(theS[i, 4, ],(theSig/2), na.rm = TRUE)
       #
-      # theRandomABS[i, 4, k] <- quantile(theS[i, 1, ],(1-theSig/2), na.rm = TRUE)
+      # theRandomMAD[i, 4, k] <- quantile(theS[i, 1, ],(1-theSig/2), na.rm = TRUE)
       # theRandomRMSD[i, 4, k] <- quantile(theS[i, 2, ],(1-theSig/2), na.rm = TRUE)
-      # theRandomWABS[i, 4, k] <- quantile(theS[i, 3, ],(1-theSig/2), na.rm = TRUE)
+      # theRandomWMAD[i, 4, k] <- quantile(theS[i, 3, ],(1-theSig/2), na.rm = TRUE)
       # theRandomWRMSD[i, 4, k] <- quantile(theS[i, 4, ],(1-theSig/2), na.rm = TRUE)
-      
-      T_ABS <- t.test(theS[i, 1, ], alternative = theAlt, conf.level = (1-theSig))
+
+      T_MAD <- t.test(theS[i, 1, ], alternative = theAlt, conf.level = (1-theSig))
       T_RMSD <- t.test(theS[i, 2, ], alternative = theAlt, conf.level = (1-theSig))
-      T_WABS <- t.test(theS[i, 3, ], alternative = theAlt, conf.level = (1-theSig))
+      T_WMAD <- t.test(theS[i, 3, ], alternative = theAlt, conf.level = (1-theSig))
       T_WRMSD <- t.test(theS[i, 4, ], alternative = theAlt, conf.level = (1-theSig))
-      
-      theRandomABS[i, 2, k] <- T_ABS$estimate[[1]]
+
+      theRandomMAD[i, 2, k] <- T_MAD$estimate[[1]]
       theRandomRMSD[i, 2, k] <- T_RMSD$estimate[[1]]
-      theRandomWABS[i, 2, k] <- T_WABS$estimate[[1]]
+      theRandomWMAD[i, 2, k] <- T_WMAD$estimate[[1]]
       theRandomWRMSD[i, 2, k] <- T_WRMSD$estimate[[1]]
 
-      theRandomABS[i, 3, k] <- T_ABS$conf.int[[1]]
+      theRandomMAD[i, 3, k] <- T_MAD$conf.int[[1]]
       theRandomRMSD[i, 3, k] <- T_RMSD$conf.int[[1]]
-      theRandomWABS[i, 3, k] <- T_WABS$conf.int[[1]]
+      theRandomWMAD[i, 3, k] <- T_WMAD$conf.int[[1]]
       theRandomWRMSD[i, 3, k] <- T_WRMSD$conf.int[[1]]
 
-      theRandomABS[i, 4, k] <- T_ABS$conf.int[[2]]
+      theRandomMAD[i, 4, k] <- T_MAD$conf.int[[2]]
       theRandomRMSD[i, 4, k] <- T_RMSD$conf.int[[2]]
-      theRandomWABS[i, 4, k] <- T_WABS$conf.int[[2]]
+      theRandomWMAD[i, 4, k] <- T_WMAD$conf.int[[2]]
       theRandomWRMSD[i, 4, k] <- T_WRMSD$conf.int[[2]]
     }
   }
 
-  theRandomABS[, 1, ] <- theABS
+  theRandomMAD[, 1, ] <- theMAD
   theRandomRMSD[, 1, ] <- theRMSD
-  theRandomWABS[, 1, ] <- theWABS
+  theRandomWMAD[, 1, ] <- theWMAD
   theRandomWRMSD[, 1, ] <- theWRMSD
 
   for (k in 1:nFac) {
     if(theCompare == 'mean'){
-      theRandomABS[theRandomABS[, 1, k] > theRandomABS[, 2, k], 5, k] <- 1
+      theRandomMAD[theRandomMAD[, 1, k] > theRandomMAD[, 2, k], 5, k] <- 1
       theRandomRMSD[theRandomRMSD[, 1, k] > theRandomRMSD[, 2, k], 5, k] <- 1
-      theRandomWABS[theRandomWABS[, 1, k] > theRandomWABS[, 2, k], 5, k] <- 1
+      theRandomWMAD[theRandomWMAD[, 1, k] > theRandomWMAD[, 2, k], 5, k] <- 1
       theRandomWRMSD[theRandomWRMSD[, 1, k] > theRandomWRMSD[, 2, k], 5, k] <- 1
     }else if(theCompare == 'between'){
       for (i in 1:nTestee){
-        if(theRandomABS[i, 1, k] > theRandomABS[i, 3, k] && theRandomABS[i, 1, k] < theRandomABS[i, 4, k]){
-          theRandomABS[i, 5, k] <- 1
+        if(theRandomMAD[i, 1, k] > theRandomMAD[i, 3, k] && theRandomMAD[i, 1, k] < theRandomMAD[i, 4, k]){
+          theRandomMAD[i, 5, k] <- 1
         }
 
         if(theRandomRMSD[i, 1, k] > theRandomRMSD[i, 3, k] && theRandomRMSD[i, 1, k] < theRandomRMSD[i, 4, k]){
           theRandomRMSD[i, 5, k] <- 1
         }
 
-        if(theRandomWABS[i, 1, k] > theRandomWABS[i, 3, k] && theRandomWABS[i, 1, k] < theRandomWABS[i, 4, k]){
-          theRandomWABS[i, 5, k] <- 1
+        if(theRandomWMAD[i, 1, k] > theRandomWMAD[i, 3, k] && theRandomWMAD[i, 1, k] < theRandomWMAD[i, 4, k]){
+          theRandomWMAD[i, 5, k] <- 1
         }
 
         if(theRandomWRMSD[i, 1, k] > theRandomWRMSD[i, 3, k] && theRandomWRMSD[i, 1, k] < theRandomWRMSD[i, 4, k]){
@@ -134,31 +138,31 @@ getTheDeviation <- function(theData, theExpectPoint, theCategory, theDim,
         }
       }
     }else if(theCompare == 'lower'){
-      theRandomABS[theRandomABS[, 1, k] < theRandomABS[, 3, k], 5, k] <- 1
+      theRandomMAD[theRandomMAD[, 1, k] < theRandomMAD[, 3, k], 5, k] <- 1
       theRandomRMSD[theRandomRMSD[, 1, k] < theRandomRMSD[, 3, k], 5, k] <- 1
-      theRandomWABS[theRandomWABS[, 1, k] < theRandomWABS[, 3, k], 5, k] <- 1
+      theRandomWMAD[theRandomWMAD[, 1, k] < theRandomWMAD[, 3, k], 5, k] <- 1
       theRandomWRMSD[theRandomWRMSD[, 1, k] < theRandomWRMSD[, 3, k], 5, k] <- 1
     }else if(theCompare == 'upper'){
-      theRandomABS[theRandomABS[, 1, k] > theRandomABS[, 4, k], 5, k] <- 1
+      theRandomMAD[theRandomMAD[, 1, k] > theRandomMAD[, 4, k], 5, k] <- 1
       theRandomRMSD[theRandomRMSD[, 1, k] > theRandomRMSD[, 4, k], 5, k] <- 1
-      theRandomWABS[theRandomWABS[, 1, k] > theRandomWABS[, 4, k], 5, k] <- 1
+      theRandomWMAD[theRandomWMAD[, 1, k] > theRandomWMAD[, 4, k], 5, k] <- 1
       theRandomWRMSD[theRandomWRMSD[, 1, k] > theRandomWRMSD[, 4, k], 5, k] <- 1
     }
-    
+
   }
 
-  colnames(theRandomABS) <- c('observe', 'mean', 'lower', 'upper', 'sign')
+  colnames(theRandomMAD) <- c('observe', 'mean', 'lower', 'upper', 'sign')
   colnames(theRandomRMSD) <- c('observe', 'mean', 'lower', 'upper', 'sign')
-  colnames(theRandomWABS) <- c('observe', 'mean', 'lower', 'upper', 'sign')
+  colnames(theRandomWMAD) <- c('observe', 'mean', 'lower', 'upper', 'sign')
   colnames(theRandomWRMSD) <- c('observe', 'mean', 'lower', 'upper', 'sign')
 
   theRandomS <- list()
-  theRandomS[[1]] <- theRandomABS
+  theRandomS[[1]] <- theRandomMAD
   theRandomS[[2]] <- theRandomRMSD
-  theRandomS[[3]] <- theRandomWABS
+  theRandomS[[3]] <- theRandomWMAD
   theRandomS[[4]] <- theRandomWRMSD
 
-  names(theRandomS) <- c('ABS', 'RMSD', 'WABS', 'WRMSD')
+  names(theRandomS) <- c('MAD', 'RMSD', 'WMAD', 'WRMSD')
 
   return(theRandomS)
 }
