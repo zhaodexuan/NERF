@@ -10,7 +10,8 @@ getTheBoot(
   theC,
   RandomReplaceRatio = 0.5,
   maxBoot = 200,
-  tempPrint = ""
+  tempPrint = "",
+  ifItem = FALSE
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ getTheBoot(
 \item{maxBoot}{The maximum steps of bootstrap.}
 
 \item{tempPrint}{= ''}
+
+\item{ifItem}{= FALSE, calculate the items when TRUE.}
 }
 \value{
 The function returns an array.

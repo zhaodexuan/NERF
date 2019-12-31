@@ -20,6 +20,14 @@
 #'
 #' @param theSig = 0.05
 #'
+#' @param ifItem = FALSE, calculate the items when TRUE.
+#'
+#' @param theCompareItem = 'between', 'lower', 'upper', 'mean'
+#'
+#' @param theAltItem = 'two.sided', 'greater', 'less'
+#'
+#' @param theSigItem = 0.05
+#'
 #' @return The function returns a list.
 #'
 #' @author zdx, \email{zhaodexuan@aliyun.com}
@@ -34,7 +42,9 @@
 
 getThePercent <- function(theData, theExpectPoint, theCategory, theDim,
                           theStep = c(0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1), maxBoot = 1000,
-                          theCompare = 'upper', theAlt = 'less', theSig = 0.05){
+                          theCompare = 'upper', theAlt = 'less', theSig = 0.05, ifItem = FALSE,
+                          theCompareItem = 'upper', theAltItem = 'less', theSigItem = 0.05){
+
   nFac <- max(theDim)
   thePR <- list()
   for (s in 1:length(theStep)) {
@@ -42,7 +52,8 @@ getThePercent <- function(theData, theExpectPoint, theCategory, theDim,
     # print(tempPrintP)
     theDeviation <- getTheDeviation(theData, theExpectPoint, theCategory, theDim,
                                     RandomReplaceRatio = theStep[s], maxBoot = maxBoot, theCompare = theCompare,
-                                    theAlt = theAlt, theSig = theSig, tempPrint = tempPrintP)
+                                    theAlt = theAlt, theSig = theSig, tempPrint = tempPrintP, ifItem = ifItem,
+                                    theCompareItem = theCompareItem, theAltItem = theAltItem, theSigItem = theSigItem)
 
     theOutMAD <- list()
     theOutRMSD <- list()

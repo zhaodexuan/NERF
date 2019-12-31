@@ -13,7 +13,11 @@ getThePercent(
   maxBoot = 1000,
   theCompare = "upper",
   theAlt = "less",
-  theSig = 0.05
+  theSig = 0.05,
+  ifItem = FALSE,
+  theCompareItem = "upper",
+  theAltItem = "less",
+  theSigItem = 0.05
 )
 }
 \arguments{
@@ -34,6 +38,14 @@ getThePercent(
 \item{theAlt}{= 'two.sided', 'greater', 'less'}
 
 \item{theSig}{= 0.05}
+
+\item{ifItem}{= FALSE, calculate the items when TRUE.}
+
+\item{theCompareItem}{= 'between', 'lower', 'upper', 'mean'}
+
+\item{theAltItem}{= 'two.sided', 'greater', 'less'}
+
+\item{theSigItem}{= 0.05}
 }
 \value{
 The function returns a list.

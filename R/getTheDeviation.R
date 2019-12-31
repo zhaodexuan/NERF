@@ -22,6 +22,14 @@
 #'
 #' @param tempPrint = ''
 #'
+#' @param ifItem = FALSE, calculate the items when TRUE.
+#'
+#' @param theCompareItem = 'between', 'lower', 'upper', 'mean'
+#'
+#' @param theAltItem = 'two.sided', 'greater', 'less'
+#'
+#' @param theSigItem = 0.05
+#'
 #' @return The function returns a list.
 #'
 #' @author zdx, \email{zhaodexuan@aliyun.com}
@@ -40,8 +48,8 @@
 
 getTheDeviation <- function(theData, theExpectPoint, theCategory, theDim,
                             RandomReplaceRatio = 0.5, maxBoot = 200, theCompare = 'upper',
-                            theAlt = 'less', theSig = 0.05, tempPrint = ''){
-
+                            theAlt = 'less', theSig = 0.05, tempPrint = '', ifItem = FALSE,
+                            theCompareItem = 'upper', theAltItem = 'less', theSigItem = 0.05){
 
   nTestee <- length(theData[, 1])
   nFac <- max(theDim)
@@ -53,10 +61,13 @@ getTheDeviation <- function(theData, theExpectPoint, theCategory, theDim,
   theRandomRMSD <- array(NA, dim = c(nTestee, 5, nFac))
   theRandomWMAD <- array(NA, dim = c(nTestee, 5, nFac))
   theRandomWRMSD <- array(NA, dim = c(nTestee, 5, nFac))
+  theSign_item <- array(NA, dim = c(nTestee, length(theCategory)))
   for (k in 1:nFac) {
+    # k <- 1
     theC <- theCategory[theDim==k]
     theDataK <- theData[, theDim==k]
     thePoint <- theExpectPoint[, theDim==k]
+    theSign_item_K <- theSign_item[, theDim==k]
 
     for (i in 1:nTestee){
       theI <- length(theC[!is.na(thePoint[i,])])
@@ -68,7 +79,41 @@ getTheDeviation <- function(theData, theExpectPoint, theCategory, theDim,
 
     tempPrintD <- paste0(tempPrint, 'factor', k, '/', nFac, ':')
     # print(tempPrintD)
-    theS <- getTheBoot(theDataK, thePoint, theC, RandomReplaceRatio = RandomReplaceRatio, maxBoot = maxBoot, tempPrint = tempPrintD)
+    theSS <- getTheBoot(theDataK, thePoint, theC, RandomReplaceRatio = RandomReplaceRatio, maxBoot = maxBoot, tempPrint = tempPrintD, ifItem = ifItem)
+    theS <- unlist(theSS[[1]])
+    theS_item <- unlist(theSS[[2]])
+
+    if(ifItem){
+      for (i in 1:nTestee){
+        for (j in 1:length(theC)){
+          # i<-1
+          # j<-1
+          if (!is.na(theDataK[i,j])){
+            d_item <- abs(thePoint[i,j] - theDataK[i,j])
+            t_item <- t.test(abs(theS_item[i,j,]),  alternative = theAltItem, conf.level = (1-theSigItem))
+
+            if(theCompareItem == 'mean'){
+              if(d_item > t_item$estimate[[1]]){
+                theSign_item_K[i,j] <- 1
+              }
+            }else if(theCompareItem == 'between'){
+              if(d_item > t_item$conf.int[[1]] && d_item < t_item$conf.int[[2]]){
+                theSign_item_K[i,j] <- 1
+              }
+            }else if(theCompareItem == 'lower'){
+              if(d_item < t_item$conf.int[[1]]){
+                theSign_item_K[i,j] <- 1
+              }
+            }else if(theCompareItem == 'upper'){
+              if(d_item > t_item$conf.int[[2]]){
+                theSign_item_K[i,j] <- 1
+              }
+            }
+          }
+        }
+      }
+      theSign_item[, theDim==k] <- theSign_item_K
+    }
 
     for (i in 1:nTestee){
       # theRandomMAD[i, 2, k] <- mean(theS[i, 1, ], na.rm = TRUE)
@@ -161,8 +206,8 @@ getTheDeviation <- function(theData, theExpectPoint, theCategory, theDim,
   theRandomS[[2]] <- theRandomRMSD
   theRandomS[[3]] <- theRandomWMAD
   theRandomS[[4]] <- theRandomWRMSD
-
-  names(theRandomS) <- c('MAD', 'RMSD', 'WMAD', 'WRMSD')
+  theRandomS[[5]] <- theSign_item
+  names(theRandomS) <- c('MAD', 'RMSD', 'WMAD', 'WRMSD', 'sign_item')
 
   return(theRandomS)
 }

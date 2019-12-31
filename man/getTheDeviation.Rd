@@ -14,7 +14,11 @@ getTheDeviation(
   theCompare = "upper",
   theAlt = "less",
   theSig = 0.05,
-  tempPrint = ""
+  tempPrint = "",
+  ifItem = FALSE,
+  theCompareItem = "upper",
+  theAltItem = "less",
+  theSigItem = 0.05
 )
 }
 \arguments{
@@ -37,6 +41,14 @@ getTheDeviation(
 \item{theSig}{= 0.05}
 
 \item{tempPrint}{= ''}
+
+\item{ifItem}{= FALSE, calculate the items when TRUE.}
+
+\item{theCompareItem}{= 'between', 'lower', 'upper', 'mean'}
+
+\item{theAltItem}{= 'two.sided', 'greater', 'less'}
+
+\item{theSigItem}{= 0.05}
 }
 \value{
 The function returns a list.
