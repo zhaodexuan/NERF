@@ -97,7 +97,7 @@ getTheDeviation <- function(theData, theExpectPoint, theCategory, theDim,
                 theSign_item_K[i,j] <- 1
               }
             }else if(theCompareItem == 'between'){
-              if(d_item > t_item$conf.int[[1]] && d_item < t_item$conf.int[[2]]){
+              if(d_item < t_item$conf.int[[1]] || d_item > t_item$conf.int[[2]]){
                 theSign_item_K[i,j] <- 1
               }
             }else if(theCompareItem == 'lower'){
@@ -166,19 +166,19 @@ getTheDeviation <- function(theData, theExpectPoint, theCategory, theDim,
       theRandomWRMSD[theRandomWRMSD[, 1, k] > theRandomWRMSD[, 2, k], 5, k] <- 1
     }else if(theCompare == 'between'){
       for (i in 1:nTestee){
-        if(theRandomMAD[i, 1, k] > theRandomMAD[i, 3, k] && theRandomMAD[i, 1, k] < theRandomMAD[i, 4, k]){
+        if(theRandomMAD[i, 1, k] < theRandomMAD[i, 3, k] || theRandomMAD[i, 1, k] > theRandomMAD[i, 4, k]){
           theRandomMAD[i, 5, k] <- 1
         }
 
-        if(theRandomRMSD[i, 1, k] > theRandomRMSD[i, 3, k] && theRandomRMSD[i, 1, k] < theRandomRMSD[i, 4, k]){
+        if(theRandomRMSD[i, 1, k] < theRandomRMSD[i, 3, k] || theRandomRMSD[i, 1, k] > theRandomRMSD[i, 4, k]){
           theRandomRMSD[i, 5, k] <- 1
         }
 
-        if(theRandomWMAD[i, 1, k] > theRandomWMAD[i, 3, k] && theRandomWMAD[i, 1, k] < theRandomWMAD[i, 4, k]){
+        if(theRandomWMAD[i, 1, k] < theRandomWMAD[i, 3, k] || theRandomWMAD[i, 1, k] > theRandomWMAD[i, 4, k]){
           theRandomWMAD[i, 5, k] <- 1
         }
 
-        if(theRandomWRMSD[i, 1, k] > theRandomWRMSD[i, 3, k] && theRandomWRMSD[i, 1, k] < theRandomWRMSD[i, 4, k]){
+        if(theRandomWRMSD[i, 1, k] < theRandomWRMSD[i, 3, k] || theRandomWRMSD[i, 1, k] > theRandomWRMSD[i, 4, k]){
           theRandomWRMSD[i, 5, k] <- 1
         }
       }
