@@ -39,7 +39,7 @@ getTheGGUM(
 \item{method}{= 'EM'}
 }
 \value{
-The function returns an array.
+The function returns a list.
 }
 \description{
 Get the estimation of the GGUM.

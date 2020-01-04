@@ -23,7 +23,7 @@ getThePercent(
 \arguments{
 \item{theData}{The prepared data matrix.}
 
-\item{theExpectPoint}{The expectation matrix.}
+\item{theExpectPoint}{The expectation list.}
 
 \item{theCategory}{The Calculated Category.}
 

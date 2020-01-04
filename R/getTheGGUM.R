@@ -22,7 +22,7 @@
 #'
 #' @param method = 'EM'
 #'
-#' @return The function returns an array.
+#' @return The function returns a list.
 #'
 #' @author zdx, \email{zhaodexuan@aliyun.com}
 #'
@@ -47,6 +47,8 @@
 getTheGGUM <- function(theDataK, theC, pack ='GGUM',
                        SE = FALSE, precision = 4, N_nodes = 30, max_outer = 60, max_inner = 60, tol = 0.001,
                        method = 'EM'){
+
+  theList <- list()
   thePoint <- array(NA, dim = c(length(theDataK[, 1]), length(theDataK[1, ])))
   if(pack=='GGUM'){
     theFit <- GGUM(theDataK, theC, SE = SE, precision = precision, N.nodes = N_nodes, max.outer = max_outer, max.inner = max_inner, tol = tol)
@@ -61,6 +63,9 @@ getTheGGUM <- function(theDataK, theC, pack ='GGUM',
         }
       }
     }
+
+    theList[[1]] <- theProb
+    theList[[2]] <- thePoint
   }else if(pack=='mirt'){
     theNames <- array()
     for (n in 1:length(theC)) {
@@ -126,7 +131,10 @@ getTheGGUM <- function(theDataK, theC, pack ='GGUM',
         }
       }
     }
+
+    theList[[1]] <- theProb
+    theList[[2]] <- thePoint
   }
 
-  return(thePoint)
+  return(theList)
 }

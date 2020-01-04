@@ -45,7 +45,8 @@ getTheExpectPoint <- function(theData, theCategory, theDim, theModel = 'GGUM', p
   nTestee <- length(theData[, 1])
   nFac <- max(theDim)
 
-  theExpPoint <- array(0, dim = c(nTestee, nItem))
+  theProbArray <- array(NA, dim = c(nTestee, nItem, (max(theCategory)+1)))
+  theExpPoint <- array(NA, dim = c(nTestee, nItem))
   for (k in 1:nFac) {
     theDataK <- theData[, theDim==k]
 
@@ -65,9 +66,14 @@ getTheExpectPoint <- function(theData, theCategory, theDim, theModel = 'GGUM', p
         thePoint <- getTheGRM(theDataK, theC, SE = SE)
       }
 
-      theExpPoint[, theDim==k] <- thePoint
+      theProbArray[, theDim==k, ] <- thePoint[[1]]
+      theExpPoint[, theDim==k] <- thePoint[[2]]
     }
   }
 
-  return(theExpPoint)
+  theList <- list()
+  theList[[1]] <- theProbArray
+  theList[[2]] <- theExpPoint
+  names(theList) <- c('probability', 'expectation')
+  return(theList)
 }

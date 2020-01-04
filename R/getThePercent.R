@@ -4,7 +4,7 @@
 #'
 #' @param theData The prepared data matrix.
 #'
-#' @param theExpectPoint The expectation matrix.
+#' @param theExpectPoint The expectation list.
 #'
 #' @param theCategory The Calculated Category.
 #'

@@ -16,7 +16,7 @@ getTheGPCM(theDataK, theC, SE = FALSE, method = "EM")
 \item{method}{= 'EM'}
 }
 \value{
-The function returns an array.
+The function returns a list.
 }
 \description{
 Get the estimation of the GPCM.

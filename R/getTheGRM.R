@@ -8,7 +8,7 @@
 #'
 #' @param SE = FALSE
 #'
-#' @return The function returns an array.
+#' @return The function returns a list.
 #'
 #' @author zdx, \email{zhaodexuan@aliyun.com}
 #'
@@ -62,5 +62,8 @@ getTheGRM <- function(theDataK, theC, SE = FALSE){
     }
   }
 
-  return(thePoint)
+  theList <- list()
+  theList[[1]] <- theProb
+  theList[[2]] <- thePoint
+  return(theList)
 }

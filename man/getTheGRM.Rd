@@ -14,7 +14,7 @@ getTheGRM(theDataK, theC, SE = FALSE)
 \item{SE}{= FALSE}
 }
 \value{
-The function returns an array.
+The function returns a list.
 }
 \description{
 Get the estimation of the GRM.

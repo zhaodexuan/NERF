@@ -4,7 +4,7 @@
 #'
 #' @param theData The prepared data matrix.
 #'
-#' @param theExpectPoint The expectation matrix.
+#' @param theExpectPoint The expectation list.
 #'
 #' @param theCategory The Calculated Category.
 #'
@@ -62,26 +62,46 @@ getTheDeviation <- function(theData, theExpectPoint, theCategory, theDim,
   theRandomWMAD <- array(NA, dim = c(nTestee, 5, nFac))
   theRandomWRMSD <- array(NA, dim = c(nTestee, 5, nFac))
   theSign_item <- array(NA, dim = c(nTestee, length(theCategory)))
+  theSign_item_WABS <- array(NA, dim = c(nTestee, length(theCategory)))
   for (k in 1:nFac) {
     # k <- 1
     theC <- theCategory[theDim==k]
     theDataK <- theData[, theDim==k]
-    thePoint <- theExpectPoint[, theDim==k]
+    theWeight <- theExpectPoint$probability[, theDim==k, ]
+    thePoint <- theExpectPoint$expectation[, theDim==k]
     theSign_item_K <- theSign_item[, theDim==k]
+    theSign_item_K_WABS <- theSign_item_WABS[, theDim==k]
 
     for (i in 1:nTestee){
+      # i <- 1
       theI <- length(theC[!is.na(thePoint[i,])])
+      tempD <- 1:length(theDataK[i,])
+      for (j in 1:length(theDataK[i,])) {
+        # j <- 1
+        if(!is.na(thePoint[i,j]) && !is.na(theDataK[i,j])){
+          tempD[j] <- log(theWeight[i,j,(theDataK[i,j]+1)] / theWeight[i,j,(thePoint[i,j]+1)]) * (theDataK[i,j] - thePoint[i,j])
+        }
+      }
+
       theMAD[i, k] <- sum(abs(thePoint[i, !is.na(thePoint[i,])] - theDataK[i, !is.na(thePoint[i,])])) / theI
       theRMSD[i, k] <- sqrt(sum((thePoint[i, !is.na(thePoint[i,])] - theDataK[i, !is.na(thePoint[i,])])^2) / theI)
-      theWMAD[i, k] <- sum(abs(thePoint[i, !is.na(thePoint[i,])] - theDataK[i, !is.na(thePoint[i,])]) / theC[!is.na(thePoint[i,])]) / theI
-      theWRMSD[i, k] <- sqrt(sum(((thePoint[i, !is.na(thePoint[i,])] - theDataK[i, !is.na(thePoint[i,])]) / theC[!is.na(thePoint[i,])])^2) / theI)
+      theWMAD[i, k] <- sum(abs(tempD), na.rm = TRUE) / theI
+      theWRMSD[i, k] <- sqrt(sum((tempD)^2, na.rm = TRUE) / theI)
+
+      # theWMAD[i, k] <- sum(abs(thePoint[i, !is.na(thePoint[i,])] - theDataK[i, !is.na(thePoint[i,])]) / theC[!is.na(thePoint[i,])]) / theI
+      # theWRMSD[i, k] <- sqrt(sum(((thePoint[i, !is.na(thePoint[i,])] - theDataK[i, !is.na(thePoint[i,])]) / theC[!is.na(thePoint[i,])])^2) / theI)
     }
 
+    thePointK <- list()
+    thePointK[[1]] <- theWeight
+    thePointK[[2]] <- thePoint
+    names(thePointK) <- c('probability','expectation')
     tempPrintD <- paste0(tempPrint, 'factor', k, '/', nFac, ':')
     # print(tempPrintD)
-    theSS <- getTheBoot(theDataK, thePoint, theC, RandomReplaceRatio = RandomReplaceRatio, maxBoot = maxBoot, tempPrint = tempPrintD, ifItem = ifItem)
+    theSS <- getTheBoot(theDataK, thePointK, theC, RandomReplaceRatio = RandomReplaceRatio, maxBoot = maxBoot, tempPrint = tempPrintD, ifItem = ifItem)
     theS <- unlist(theSS[[1]])
     theS_item <- unlist(theSS[[2]])
+    theS_item_WABS <- unlist(theSS[[3]])
 
     if(ifItem){
       for (i in 1:nTestee){
@@ -92,27 +112,55 @@ getTheDeviation <- function(theData, theExpectPoint, theCategory, theDim,
             d_item <- abs(thePoint[i,j] - theDataK[i,j])
             t_item <- t.test(abs(theS_item[i,j,]),  alternative = theAltItem, conf.level = (1-theSigItem))
 
-            if(theCompareItem == 'mean'){
-              if(d_item > t_item$estimate[[1]]){
-                theSign_item_K[i,j] <- 1
-              }
-            }else if(theCompareItem == 'between'){
-              if(d_item < t_item$conf.int[[1]] || d_item > t_item$conf.int[[2]]){
-                theSign_item_K[i,j] <- 1
-              }
-            }else if(theCompareItem == 'lower'){
-              if(d_item < t_item$conf.int[[1]]){
-                theSign_item_K[i,j] <- 1
-              }
-            }else if(theCompareItem == 'upper'){
-              if(d_item > t_item$conf.int[[2]]){
-                theSign_item_K[i,j] <- 1
+            if(!is.na(t_item$statistic[[1]])){
+              if(theCompareItem == 'mean'){
+                if(d_item > t_item$estimate[[1]]){
+                  theSign_item_K[i,j] <- 1
+                }
+              }else if(theCompareItem == 'between'){
+                if(d_item < t_item$conf.int[[1]] || d_item > t_item$conf.int[[2]]){
+                  theSign_item_K[i,j] <- 1
+                }
+              }else if(theCompareItem == 'lower'){
+                if(d_item < t_item$conf.int[[1]]){
+                  theSign_item_K[i,j] <- 1
+                }
+              }else if(theCompareItem == 'upper'){
+                if(d_item > t_item$conf.int[[2]]){
+                  theSign_item_K[i,j] <- 1
+                }
               }
             }
+
+            d_item <- abs(log(theWeight[i,j,(theDataK[i,j]+1)] / theWeight[i,j,(thePoint[i,j]+1)]) * (theDataK[i,j] - thePoint[i,j]))
+            t_item <- t.test(abs(theS_item_WABS[i,j,]),  alternative = theAltItem, conf.level = (1-theSigItem))
+
+            if(!is.na(t_item$statistic[[1]])){
+              if(theCompareItem == 'mean'){
+                if(d_item > t_item$estimate[[1]]){
+                  theSign_item_K_WABS[i,j] <- 1
+                }
+              }else if(theCompareItem == 'between'){
+                if(d_item < t_item$conf.int[[1]] || d_item > t_item$conf.int[[2]]){
+                  theSign_item_K_WABS[i,j] <- 1
+                }
+              }else if(theCompareItem == 'lower'){
+                if(d_item < t_item$conf.int[[1]]){
+                  theSign_item_K_WABS[i,j] <- 1
+                }
+              }else if(theCompareItem == 'upper'){
+                if(d_item > t_item$conf.int[[2]]){
+                  theSign_item_K_WABS[i,j] <- 1
+                }
+              }
+            }
+
           }
         }
       }
+
       theSign_item[, theDim==k] <- theSign_item_K
+      theSign_item_WABS[, theDim==k] <- theSign_item_K_WABS
     }
 
     for (i in 1:nTestee){
@@ -207,7 +255,8 @@ getTheDeviation <- function(theData, theExpectPoint, theCategory, theDim,
   theRandomS[[3]] <- theRandomWMAD
   theRandomS[[4]] <- theRandomWRMSD
   theRandomS[[5]] <- theSign_item
-  names(theRandomS) <- c('MAD', 'RMSD', 'WMAD', 'WRMSD', 'sign_item')
+  theRandomS[[6]] <- theSign_item_WABS
+  names(theRandomS) <- c('MAD', 'RMSD', 'WMAD', 'WRMSD', 'sign_itemABS', 'sign_itemWABS')
 
   return(theRandomS)
 }

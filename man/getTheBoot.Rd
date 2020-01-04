@@ -6,7 +6,7 @@
 \usage{
 getTheBoot(
   theDataK,
-  thePoint,
+  thePointK,
   theC,
   RandomReplaceRatio = 0.5,
   maxBoot = 200,
@@ -17,7 +17,7 @@ getTheBoot(
 \arguments{
 \item{theDataK}{The data matrix of factor K.}
 
-\item{thePoint}{The expectation matrix of factor K.}
+\item{thePointK}{The expectation list of factor K.}
 
 \item{theC}{The category of factor K.}
 

@@ -17,7 +17,7 @@
 #'
 
 getTheCategory <- function(theData){
-  theC <- array(0, dim = c(1, length(theData[1, ])))
+  theC <- c(1:length(theData[1, ]))
 
   for (j in 1:length(theData[1, ])) {
     theC[j] <- max(theData[, j])
