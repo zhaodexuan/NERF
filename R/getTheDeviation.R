@@ -50,7 +50,7 @@ getTheDeviation <- function(theData, theExpectPoint, theCategory, theDim,
                             RandomReplaceRatio = 0.5, maxBoot = 200, theCompare = 'upper',
                             theAlt = 'less', theSig = 0.05, tempPrint = '', ifItem = FALSE,
                             theCompareItem = 'upper', theAltItem = 'less', theSigItem = 0.05){
-
+  names(theExpectPoint) <- c('probability','expectation')
   nTestee <- length(theData[, 1])
   nFac <- max(theDim)
   theMAD <- array(NA, dim = c(nTestee, nFac))
@@ -108,6 +108,7 @@ getTheDeviation <- function(theData, theExpectPoint, theCategory, theDim,
         for (j in 1:length(theC)){
           # i<-1
           # j<-1
+          # print(paste0('i=',i,',j=',j))
           if (!is.na(theDataK[i,j])){
             d_item <- abs(thePoint[i,j] - theDataK[i,j])
             t_item <- t.test(abs(theS_item[i,j,]),  alternative = theAltItem, conf.level = (1-theSigItem))
@@ -133,7 +134,9 @@ getTheDeviation <- function(theData, theExpectPoint, theCategory, theDim,
             }
 
             d_item <- abs(log(theWeight[i,j,(theDataK[i,j]+1)] / theWeight[i,j,(thePoint[i,j]+1)]) * (theDataK[i,j] - thePoint[i,j]))
-            t_item <- t.test(abs(theS_item_WABS[i,j,]),  alternative = theAltItem, conf.level = (1-theSigItem))
+            tempTest <- abs(theS_item_WABS[i,j,])
+            tempTest[tempTest == Inf] <- max(tempTest[tempTest!=Inf],na.rm = TRUE)
+            t_item <- t.test(tempTest, alternative = theAltItem, conf.level = (1-theSigItem))
 
             if(!is.na(t_item$statistic[[1]])){
               if(theCompareItem == 'mean'){
@@ -156,6 +159,7 @@ getTheDeviation <- function(theData, theExpectPoint, theCategory, theDim,
             }
 
           }
+
         }
       }
 
@@ -164,6 +168,8 @@ getTheDeviation <- function(theData, theExpectPoint, theCategory, theDim,
     }
 
     for (i in 1:nTestee){
+      # i <- 6
+      # print(i)
       # theRandomMAD[i, 2, k] <- mean(theS[i, 1, ], na.rm = TRUE)
       # theRandomRMSD[i, 2, k] <- mean(theS[i, 2, ], na.rm = TRUE)
       # theRandomWMAD[i, 2, k] <- mean(theS[i, 3, ], na.rm = TRUE)
@@ -181,8 +187,12 @@ getTheDeviation <- function(theData, theExpectPoint, theCategory, theDim,
 
       T_MAD <- t.test(theS[i, 1, ], alternative = theAlt, conf.level = (1-theSig))
       T_RMSD <- t.test(theS[i, 2, ], alternative = theAlt, conf.level = (1-theSig))
-      T_WMAD <- t.test(theS[i, 3, ], alternative = theAlt, conf.level = (1-theSig))
-      T_WRMSD <- t.test(theS[i, 4, ], alternative = theAlt, conf.level = (1-theSig))
+      tempTest <- theS[i, 3, ]
+      tempTest[tempTest == Inf] <- max(tempTest[tempTest!=Inf],na.rm = TRUE)
+      T_WMAD <- t.test(tempTest, alternative = theAlt, conf.level = (1-theSig))
+      tempTest <- theS[i, 4, ]
+      tempTest[tempTest == Inf] <- max(tempTest[tempTest!=Inf],na.rm = TRUE)
+      T_WRMSD <- t.test(tempTest, alternative = theAlt, conf.level = (1-theSig))
 
       theRandomMAD[i, 2, k] <- T_MAD$estimate[[1]]
       theRandomRMSD[i, 2, k] <- T_RMSD$estimate[[1]]

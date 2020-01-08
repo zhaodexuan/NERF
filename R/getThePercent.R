@@ -47,7 +47,9 @@ getThePercent <- function(theData, theExpectPoint, theCategory, theDim,
 
   nFac <- max(theDim)
   thePR <- list()
+  names(theExpectPoint) <- c('probability','expectation')
   for (s in 1:length(theStep)) {
+    # s <- 1
     tempPrintP <- paste0('percent', theStep[s], ':')
     # print(tempPrintP)
     theDeviation <- getTheDeviation(theData, theExpectPoint, theCategory, theDim,
